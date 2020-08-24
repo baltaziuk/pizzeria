@@ -92,10 +92,14 @@
       });
 
         /* prevent default action for event */
+        event.preventDefault();
 
         /* toggle active class on element of thisProduct */
+        /* przełącz aktywną klasę w elemencie thisProduct* /
+
 
         /* find all active products */
+        const allActiveProducts=document.querySelectorAll('')
 
         /* START LOOP: for each active product */
 
