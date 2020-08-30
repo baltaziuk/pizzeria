@@ -95,6 +95,8 @@
       //console.log('thisproduct_cartbutton',thisProduct.cartButton);
       thisProduct.priceElem = thisProduct.element.querySelector(select.menuProduct.priceElem);
       //console.log('thisproduct_priceelement',thisProduct.priceElem);
+      thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
+      //console.log('obrazki', thisProduct.imageWrapper);
     }
 
     initAccordion() {
@@ -148,11 +150,13 @@
 
     processOrder() {
       const thisProduct = this;
+      thisProduct.params = {};
       //console.log('ORDER', thisProduct);
 
       /* read all data from the form (using utils.serializeFormToObject) and save it to const formData */
       const formData = utils.serializeFormToObject(thisProduct.form);
       console.log('form DATA', formData);
+
 
       /* set variable price to equal thisProduct.data.price */
       let price = thisProduct.data.price;
@@ -164,6 +168,7 @@
         /* save the element in thisProduct.data.params with key paramId as const param */
         const param = thisProduct.data.params[paramId];
         console.log('param', param);
+
 
 
         /* START LOOP: for each optionId in param.options */
@@ -187,6 +192,33 @@
 
             /* END ELSE IF: if option is not selected and option is default */
           }
+
+          const images = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
+          console.log('obrazki', images);
+
+          if (optionSelected) {
+            if (!thisProduct.params[paramId]) {
+              thisProduct.params[paramId] = {
+                label: param.label,
+                options: {},
+              };
+            }
+            thisProduct.params[paramId].options[optionId] = option.label;
+            for (let image of images) {
+              image.classList.add(classNames.menuProduct.imageVisible);
+            }
+          }
+          else {
+            for(let image of images){
+              image.classList.remove(classNames.menuProduct.imageVisible);
+            }
+          }
+
+
+
+
+
+
           /* END LOOP: for each optionId in param.options */
         }
         /* END LOOP: for each paramId in thisProduct.data.params */
