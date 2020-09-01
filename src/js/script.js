@@ -63,9 +63,13 @@
       thisProduct.getElements();
       thisProduct.initAccordion();
       thisProduct.initOrderForm();
+      thisProduct.initAmountWidget();
       thisProduct.processOrder();
+
       //console.log('new Product:', thisProduct);
+
     }
+
 
     renderInMenu() {
       const thisProduct = this;
@@ -97,6 +101,7 @@
       //console.log('thisproduct_priceelement',thisProduct.priceElem);
       thisProduct.imageWrapper = thisProduct.element.querySelector(select.menuProduct.imageWrapper);
       //console.log('obrazki', thisProduct.imageWrapper);
+      thisProduct.amountWidgetElem = thisProduct.element.querySelector(select.menuProduct.amountWidget);
     }
 
     initAccordion() {
@@ -110,10 +115,10 @@
         event.preventDefault();
         /* toggle active class on element of thisProduct */
         thisProduct.element.classList.toggle(classNames.menuProduct.wrapperActive);
-        // console.log('thisProduct.element', thisProduct.element);
+        //console.log('thisProduct.element', thisProduct.element);
         /* find all active products */
         const allActivesProducts = document.querySelectorAll('.product.' + classNames.menuProduct.wrapperActive);
-        // console.log('activesProducts', allActivesProducts);
+        //console.log('activesProducts', allActivesProducts);
         /* START LOOP: for each active product */
         for (let activeProduct of allActivesProducts) {
           /* START: if the active product isn't the element of thisProduct */
@@ -155,7 +160,7 @@
 
       /* read all data from the form (using utils.serializeFormToObject) and save it to const formData */
       const formData = utils.serializeFormToObject(thisProduct.form);
-      console.log('form DATA', formData);
+      //console.log('form DATA', formData);
 
 
       /* set variable price to equal thisProduct.data.price */
@@ -167,7 +172,7 @@
 
         /* save the element in thisProduct.data.params with key paramId as const param */
         const param = thisProduct.data.params[paramId];
-        console.log('param', param);
+        //console.log('param', param);
 
 
 
@@ -194,7 +199,7 @@
           }
 
           const images = thisProduct.imageWrapper.querySelectorAll('.' + paramId + '-' + optionId);
-          console.log('obrazki', images);
+          //console.log('obrazki', images);
 
           if (optionSelected) {
             if (!thisProduct.params[paramId]) {
@@ -209,7 +214,7 @@
             }
           }
           else {
-            for(let image of images){
+            for (let image of images) {
               image.classList.remove(classNames.menuProduct.imageVisible);
             }
           }
@@ -230,10 +235,55 @@
     }
 
 
+    initAmountWidget() {
+      const thisProduct = this;
+
+      thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
+
+
+    }
+
+
   }
 
 
 
+  class AmountWidget {
+    constructor(element) {
+      const thisWidget = this;
+
+      thisWidget.getElements(element);
+      thisWidget.setValue(thisWidget.input.value);
+
+      console.log('AmountWidget', thisWidget);
+      console.log('constructor arguments:', element);
+
+    }
+
+    getElements(element) {
+      const thisWidget = this;
+
+      thisWidget.element = element;
+      thisWidget.input = thisWidget.element.querySelector(select.widgets.amount.input);
+      thisWidget.linkDecrease = thisWidget.element.querySelector(select.widgets.amount.linkDecrease);
+      thisWidget.linkIncrease = thisWidget.element.querySelector(select.widgets.amount.linkIncrease);
+    }
+
+
+    setValue(value) {
+      const thisWidget = this;
+
+      const newValue = parseInt(value);
+
+      /*TODO: Add validation */
+
+      thisWidget.value = newValue;
+      thisWidget.input.value = thisWidget.value;
+    }
+
+    initActions()
+
+  }
 
 
 
@@ -242,7 +292,7 @@
     initMenu: function () {
       const thisApp = this;
 
-      console.log('thisApp.data:', thisApp.data);
+      //console.log('thisApp.data:', thisApp.data);
 
       for (let productData in thisApp.data.products) {
         new Product(productData, thisApp.data.products[productData]);
