@@ -42,11 +42,12 @@
 
   const settings = {
     amountWidget: {
-      defaultValue: 1,
+      defaultValue: 5,
       defaultMin: 1,
       defaultMax: 9,
     }
   };
+
 
   const templates = {
     menuProduct: Handlebars.compile(document.querySelector(select.templateOf.menuProduct).innerHTML),
@@ -229,6 +230,9 @@
         /* END LOOP: for each paramId in thisProduct.data.params */
       }
 
+      /*multiply price by amount*/
+      price *= thisProduct.amountWidget.value;
+
       /* set the contents of thisProduct.priceElem to be the value of variable price */
 
       thisProduct.priceElem.innerHTML = price;
@@ -239,9 +243,14 @@
       const thisProduct = this;
 
       thisProduct.amountWidget = new AmountWidget(thisProduct.amountWidgetElem);
-
+      thisProduct.amountWidgetElem.addEventListener('updated', function () {
+        thisProduct.processOrder();
+      });
 
     }
+
+
+
 
 
   }
@@ -253,14 +262,19 @@
       const thisWidget = this;
 
       thisWidget.getElements(element);
+      thisWidget.initActions();
+      thisWidget.value = settings.amountWidget.defaultValue;
+
+
       thisWidget.setValue(thisWidget.input.value);
+
 
       console.log('AmountWidget', thisWidget);
       console.log('constructor arguments:', element);
 
     }
 
-    getElements(element) {
+    getElements(element){
       const thisWidget = this;
 
       thisWidget.element = element;
@@ -276,12 +290,48 @@
       const newValue = parseInt(value);
 
       /*TODO: Add validation */
-
-      thisWidget.value = newValue;
+      if (newValue <= settings.amountWidget.defaultMax && newValue >= settings.amountWidget.defaultMin && newValue !== thisWidget.value) {
+        thisWidget.value = newValue;
+        thisWidget.announce();
+      }
+      console.log('NEW ',thisWidget.value);
       thisWidget.input.value = thisWidget.value;
+
+
     }
 
-    initActions()
+    initActions() {
+      const thisWidget = this;
+      thisWidget.input.addEventListener('change', function () {
+        thisWidget.value = thisWidget.input.value;
+        console.log('Widget input', thisWidget.value);
+      });
+
+      thisWidget.linkDecrease.addEventListener('click', function () {
+        event.preventDefault();
+        thisWidget.value = thisWidget.value - 1;
+        thisWidget.input.value = thisWidget.value;
+        console.log('widget -1', thisWidget.value);
+      });
+
+      thisWidget.linkIncrease.addEventListener('click', function () {
+        event.preventDefault();
+        // thisWidget.value = eval(thisWidget.value);
+        thisWidget.value += 1; //thisWidget.value + 1;
+        thisWidget.input.value = thisWidget.value;
+        console.log('widget +1', thisWidget.value);
+      });
+
+
+
+    }
+
+    announce() {
+      const thisWidget = this;
+
+      const event = new Event('updated');
+      thisWidget.element.dispatchEvent(event);
+    }
 
   }
 
