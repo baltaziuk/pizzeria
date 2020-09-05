@@ -183,17 +183,21 @@
       thisProduct.cartButton.addEventListener('click', function (event) {
         event.preventDefault();
         thisProduct.processOrder();
+        thisProduct.addToCart();
       });
     }
 
     processOrder() {
       const thisProduct = this;
-      thisProduct.params = {};
+
       ////console.log('ORDER', thisProduct);
 
       /* read all data from the form (using utils.serializeFormToObject) and save it to const formData */
       const formData = utils.serializeFormToObject(thisProduct.form);
       ////console.log('form DATA', formData);
+
+      thisProduct.params = {};
+
 
 
       /* set variable price to equal thisProduct.data.price */
@@ -263,11 +267,14 @@
       }
 
       /*multiply price by amount*/
-      price *= thisProduct.amountWidget.value;
+      thisProduct.priceSingle = price;
+      thisProduct.price = thisProduct.priceSingle * thisProduct.amountWidget.value;
 
       /* set the contents of thisProduct.priceElem to be the value of variable price */
 
-      thisProduct.priceElem.innerHTML = price;
+      thisProduct.priceElem.innerHTML = thisProduct.price;
+
+      //console.log('parametry produktu', thisProduct.params);
     }
 
 
@@ -281,9 +288,14 @@
 
     }
 
+    addToCart() {
+      const thisProduct = this;
 
+      thisProduct.data.name = thisProduct.name; // ????
+      thisProduct.amountWidget.value = thisProduct.amount; // ????
 
-
+      app.cart.add(thisProduct);
+    }
 
   }
 
@@ -382,11 +394,16 @@
 
       thisCart.products = [];
 
+
       thisCart.getElements(element);
       thisCart.initActions();
 
+
       console.log('new Cart', thisCart);
     }
+
+
+
 
     getElements(element) {
       const thisCart = this;
@@ -396,6 +413,8 @@
       thisCart.dom.wrapper = element;
 
       thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
+      thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList); // ?????
+      console.log('thisCart.dom.productlist', thisCart.dom.productList );
     }
 
     initActions() {
@@ -404,8 +423,26 @@
         event.preventDefault();
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
       });
+    }
+
+    add(menuProduct) {
+      const thisCart = this;
+
+      const generatedHTML = templates.cartProduct(thisCart.thisProduct); //????
+      console.log('generowany HTML', generatedHTML);
+      console.log('produkt ',thisCart.thisProduct);
+
+      //thisCart.dom = utils.createDOMFromHTML(generatedHTML);
+      thisCart.dom.productList = utils.createDOMFromHTML(generatedHTML);
+      console.log('generowany dom', thisCart.dom.productList );
+
+      const generatedDOM= document.querySelector(select.containerOf.cart); //ok
+      console.log('kontener', generatedDOM);
 
 
+      generatedDOM.appendChild(thisCart.dom.productList); //ok
+
+      console.log('adding producr', menuProduct);
     }
 
 
