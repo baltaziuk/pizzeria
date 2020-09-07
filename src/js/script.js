@@ -343,7 +343,7 @@
       const newValue = parseInt(value);
 
       /*Add validation */
-      if (thisWidget.input.value != thisWidget.value && thisWidget.input.value >= settings.amountWidget.defaultMin && thisWidget.input.value <= settings.amountWidget.defaultMax) {
+      if (thisWidget.input.value != newValue && newValue >= settings.amountWidget.defaultMin && newValue <= settings.amountWidget.defaultMax) {
         thisWidget.value = newValue;
         thisWidget.announce();
 
@@ -363,16 +363,18 @@
 
       thisWidget.linkDecrease.addEventListener('click', function () {
         event.preventDefault();
-        thisWidget.value = thisWidget.value - 1;
-        thisWidget.input.value = thisWidget.value;
+        thisWidget.setValue(thisWidget.value - 1);
+        //thisWidget.value = thisWidget.value - 1;
+        //thisWidget.input.value = thisWidget.value;
         //console.log('widget -1', thisWidget.value);
       });
 
       thisWidget.linkIncrease.addEventListener('click', function () {
         event.preventDefault();
+        thisWidget.setValue(thisWidget.value + 1);
         // thisWidget.value = eval(thisWidget.value);
-        thisWidget.value += 1; //thisWidget.value + 1;
-        thisWidget.input.value = thisWidget.value;
+        //thisWidget.value += 1; //thisWidget.value + 1;
+        //thisWidget.input.value = thisWidget.value;
         //console.log('widget +1', thisWidget.value);
       });
 
@@ -395,10 +397,11 @@
     constructor(element) {
       const thisCart = this;
 
-      thisCart.deliveryFee = settings.cart.defaultDeliveryFee;
+
 
 
       thisCart.products = [];
+      thisCart.deliveryFee = settings.cart.defaultDeliveryFee;
 
 
 
@@ -434,7 +437,7 @@
     initActions() {
       const thisCart = this;
       thisCart.dom.toggleTrigger.addEventListener('click', function () {
-        event.preventDefault();
+        //event.preventDefault();
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
       });
 
@@ -473,6 +476,7 @@
         thisCart.totalNumber += product.amount;
       }
       thisCart.totalPrice = thisCart.subtotalPrice + thisCart.deliveryFee;
+
       console.log('Total number', thisCart.totalNumber);
       console.log('Subtotal', thisCart.subtotalPrice);
       console.log('total price', thisCart.totalPrice);
@@ -523,7 +527,7 @@
 
       thisCartProduct.amountWidget = new AmountWidget(thisCartProduct.dom.amountWidget);
 
-      thisCartProduct.dom.amountWidget.addEventListener('click', function () {
+      thisCartProduct.dom.amountWidget.addEventListener('updated', function () {
 
 
         thisCartProduct.amount = thisCartProduct.amountWidget.value;
