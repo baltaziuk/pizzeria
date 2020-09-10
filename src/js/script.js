@@ -301,7 +301,6 @@
   }
 
 
-
   class AmountWidget {
     constructor(element) {
       const thisWidget = this;
@@ -413,13 +412,11 @@
       //console.log('new Cart', thisCart);
     }
 
-
-
-
     getElements(element) {
       const thisCart = this;
 
       thisCart.dom = {};
+      //console.log('obiekty',thisCart);
 
       thisCart.dom.wrapper = element;
 
@@ -441,8 +438,12 @@
         thisCart.dom.wrapper.classList.toggle(classNames.cart.wrapperActive);
       });
 
-      thisCart.dom.productList.addEventListener('updated', function(){
+      thisCart.dom.productList.addEventListener('updated', function () {
         thisCart.update();
+      });
+
+      thisCart.dom.productList.addEventListener('remove', function () {
+        thisCart.remove(event.detail.cartProduct);
       });
     }
 
@@ -488,6 +489,19 @@
       }
     }
 
+    remove(cartProduct) {
+      const thisCart = this;
+      //console.log('tablica', thisCart.products);
+      const index = thisCart.products.indexOf(cartProduct);
+      //console.log('index', index);
+      thisCart.products.splice(index,1);
+      cartProduct.dom.wrapper.remove();
+
+
+      thisCart.update();
+
+    }
+
   }
 
   class CartProduct {
@@ -501,11 +515,14 @@
       thisCartProduct.amount = menuProduct.amount;
       thisCartProduct.params = JSON.parse(JSON.stringify(menuProduct.params));
 
+
       thisCartProduct.getElements(element);
+
 
       //console.log('NOWA CartProduct', thisCartProduct);
 
       thisCartProduct.initAmountWidget();
+      thisCartProduct.initActions();
 
     }
 
@@ -540,6 +557,37 @@
 
 
       });
+
+    }
+
+    remove() {
+      const thisCartProduct = this;
+
+      const event = new CustomEvent('remove', {
+        bubbles: true,
+        detail: {
+          cartProduct: thisCartProduct,
+
+        },
+      });
+
+      thisCartProduct.dom.wrapper.dispatchEvent(event);
+
+    }
+
+    initActions() {
+      const thisCartProduct = this;
+      thisCartProduct.dom.edit.addEventListener('click', function () {
+        event.preventDefault();
+
+      });
+
+      thisCartProduct.dom.remove.addEventListener('click', function () {
+        event.preventDefault();
+        thisCartProduct.remove();
+        // console.log('guzik usuwanie', thisCartProduct.remove);
+      });
+
 
     }
 
