@@ -33,10 +33,10 @@ class Cart {
     thisCart.dom.form = thisCart.dom.wrapper.querySelector(select.cart.form);
     // console.log('form', thisCart.dom.form);
     thisCart.dom.formInputAddress = thisCart.dom.wrapper.querySelector(select.cart.address);
-    console.log('inputy', thisCart.dom.formInputAddress);
+    //console.log('inputy', thisCart.dom.formInputAddress);
 
     thisCart.dom.formInputPhone = thisCart.dom.wrapper.querySelector(select.cart.phone);
-    console.log('inputy', thisCart.dom.formInputPhone);
+    //console.log('inputy', thisCart.dom.formInputPhone);
 
     thisCart.dom.toggleTrigger = thisCart.dom.wrapper.querySelector(select.cart.toggleTrigger);
     thisCart.dom.productList = thisCart.dom.wrapper.querySelector(select.cart.productList);
